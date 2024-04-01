@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import messagebox
 from datetime import datetime
+import nummodule
 
 # Глобальная переменная для хранения результатов
 results = ""
@@ -58,6 +59,24 @@ def open_email_window():
     
     send_button = tk.Button(email_window, text="Отправить", command=send_email, bg='dark blue', fg='white')
     send_button.pack(pady=20)
+    
+def calculate_and_show():
+    global results
+    date_str = entry_date.get()
+    try:
+        birth_date = datetime.strptime(date_str, "%d.%m.%Y")
+        day, month, year = birth_date.day, birth_date.month, birth_date.year
+        numbers = calculate_pythagorean_numbers(day, month, year)  # Получаем рабочие числа
+        
+        # Получаем анализ чисел 
+        analysis = nummodule.analyze_numbers(numbers)
+        
+        results = f"1-е рабочее число: {numbers[0]}\n2-е рабочее число: {numbers[1]}\n"\
+                  f"3-е рабочее число: {numbers[2]}\n4-е рабочее число: {numbers[3]}\n\nАнализ:\n{analysis}"
+                  
+        messagebox.showinfo("Результаты", results)
+    except ValueError:
+        messagebox.showerror("Ошибка", "Некорректный формат даты. Используйте ДД.ММ.ГГГГ")
 
 # Создание GUI
 root = tk.Tk()
