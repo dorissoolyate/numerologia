@@ -2,6 +2,11 @@ import tkinter as tk
 from tkinter import messagebox
 from datetime import datetime
 import nummodule
+import email
+import smtplib,ssl
+from email.message import EmailMessage
+from tkinter import filedialog
+from tkinter import messagebox, filedialog
 results = ""
 def calculate_pythagorean_numbers(day, month, year):
     sum_day_month = day + month
@@ -69,6 +74,29 @@ def calculate_and_show():
         messagebox.showinfo("Результаты", results)
     except ValueError:
         messagebox.showerror("Ошибка", "Некорректный формат даты. Используйте ДД.ММ.ГГГГ")
+        
+def saada_k():
+    kellele=calculate_button.get()
+    smtp_server="smtp.gmail.com"
+    port=587
+    sender_email="maasikmetssatoru@gmail.com"
+    password="Ea123456#"
+    context=ssl.create_default_context()
+    msg=EmailMessage()
+    msg.set_content(entry_date)
+    msg["Subject"]="hehe"
+    msg["From"]="hehe"
+    msg["To"]=kellele    
+    try:
+        server=smtplib.SMTP(smtp_server,port)
+        server.starttls(context=context)
+        server.login(sender_email,password)
+        server.send_message(msg)
+        print("Valmis")
+    except Exception as e:
+        print(e)
+    finally:
+        server.quit()
 
 root = tk.Tk()
 root.title("Расчет по методу Пифагора")
