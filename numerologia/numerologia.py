@@ -2,24 +2,20 @@ import tkinter as tk
 from tkinter import messagebox
 from datetime import datetime
 import nummodule
-
-# Глобальная переменная для хранения результатов
 results = ""
-
 def calculate_pythagorean_numbers(day, month, year):
-    # Пересмотренный расчёт без отрицательных чисел
     sum_day_month = day + month
     sum_year = sum(map(int, str(year)))
-    first_working_number = sum(map(int, str(sum_day_month + sum_year)))  # Обеспечиваем однозначный результат
+    first_working_number = sum(map(int, str(sum_day_month + sum_year))) 
 
     if day >= 10:
         day_first_digit = int(str(day)[0])
     else:
         day_first_digit = day
-    third_working_number = sum(map(int, str(2 * day_first_digit)))  # Изменено для избежания отрицательных результатов
+    third_working_number = sum(map(int, str(2 * day_first_digit)))
 
-    second_working_number = sum(map(int, str(first_working_number)))  # Обеспечиваем однозначный результат
-    fourth_working_number = sum(map(int, str(third_working_number)))  # Обеспечиваем однозначный результат
+    second_working_number = sum(map(int, str(first_working_number)))  
+    fourth_working_number = sum(map(int, str(third_working_number)))  
     
     return first_working_number, second_working_number, third_working_number, fourth_working_number
 
@@ -66,19 +62,14 @@ def calculate_and_show():
     try:
         birth_date = datetime.strptime(date_str, "%d.%m.%Y")
         day, month, year = birth_date.day, birth_date.month, birth_date.year
-        numbers = calculate_pythagorean_numbers(day, month, year)  # Получаем рабочие числа
-        
-        # Получаем анализ чисел 
+        numbers = calculate_pythagorean_numbers(day, month, year)  
         analysis = nummodule.analyze_numbers(numbers)
-        
         results = f"1-е рабочее число: {numbers[0]}\n2-е рабочее число: {numbers[1]}\n"\
-                  f"3-е рабочее число: {numbers[2]}\n4-е рабочее число: {numbers[3]}\n\nАнализ:\n{analysis}"
-                  
+                  f"3-е рабочее число: {numbers[2]}\n4-е рабочее число: {numbers[3]}\n\nАнализ:\n{analysis}"   
         messagebox.showinfo("Результаты", results)
     except ValueError:
         messagebox.showerror("Ошибка", "Некорректный формат даты. Используйте ДД.ММ.ГГГГ")
 
-# Создание GUI
 root = tk.Tk()
 root.title("Расчет по методу Пифагора")
 root.geometry("300x600")
