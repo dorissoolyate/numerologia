@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import messagebox
+from tkinter import Toplevel, messagebox
 from datetime import datetime
 import nummodule
 import email
@@ -7,6 +7,7 @@ import smtplib,ssl
 from email.message import EmailMessage
 from tkinter import filedialog
 from tkinter import messagebox, filedialog
+from http import server
 results = ""
 def calculate_pythagorean_numbers(day, month, year):
     sum_day_month = day + month
@@ -40,13 +41,31 @@ def calculate_and_show():
         messagebox.showerror("Ошибка", "Некорректный формат даты. Используйте ДД.ММ.ГГГГ")
 
 def open_email_window():
+    global results
     if not results:
         messagebox.showerror("Ошибка", "Сначала рассчитайте результаты.")
         return
 
+    email_window =Toplevel
+    email_window.title("Отправить результаты на почту")
+    email_window.geometry("300x200")
+    email_window.configure(bg='light blue')
+
+    tk.Label(email_window, text="Введите адрес электронной почты:", bg='light blue', fg='dark blue').pack(pady=10)
+    email_entry = tk.Entry(email_window)
+    email_entry.pack(pady=10)
+
+    send_button = tk.Button(email_window, text="Отправить", command=lambda: saada_k(email_entry.get()), bg='dark blue', fg='white')
+    send_button.pack(pady=20)
+
+def open_email_window():
+    if not results:
+        messagebox.showerror("Ошибка", "Сначала рассчитайте результаты.")
+        return
+    
     def send_email():
         email = email_entry.get()
-        messagebox.showinfo("Отправка", f"Результаты были бы отправлены на {email} (функция не реализована).")
+        saada_k(email, results)
         email_window.destroy()
     
     email_window = tk.Toplevel(root)
@@ -60,6 +79,28 @@ def open_email_window():
     
     send_button = tk.Button(email_window, text="Отправить", command=send_email, bg='dark blue', fg='white')
     send_button.pack(pady=20)
+
+def saada_k(receiver_email, message_content):
+    smtp_server = "smtp.gmail.com"
+    port = 587 
+    sender_email = "maasikmetssatoru@gmail.com"
+    password = "lfvv xozu njuf bmjw" 
+
+    msg = EmailMessage()
+    msg["Subject"] = "Результаты расчёта"
+    msg["From"] = sender_email
+    msg["To"] = receiver_email
+    msg.set_content(message_content)
+    
+    context = ssl.create_default_context()
+    try:
+        with smtplib.SMTP(smtp_server, port) as server:
+            server.starttls(context=context)
+            server.login(sender_email, password)
+            server.send_message(msg)
+            messagebox.showinfo("Успех", "Результаты успешно отправлены.")
+    except Exception as e:
+        messagebox.showerror("Ошибка отправки", str(e))
     
 def calculate_and_show():
     global results
@@ -75,28 +116,7 @@ def calculate_and_show():
     except ValueError:
         messagebox.showerror("Ошибка", "Некорректный формат даты. Используйте ДД.ММ.ГГГГ")
         
-def saada_k():
-    kellele=calculate_button.get()
-    smtp_server="smtp.gmail.com"
-    port=587
-    sender_email="maasikmetssatoru@gmail.com"
-    password="Ea123456#"
-    context=ssl.create_default_context()
-    msg=EmailMessage()
-    msg.set_content(entry_date)
-    msg["Subject"]="hehe"
-    msg["From"]="hehe"
-    msg["To"]=kellele    
-    try:
-        server=smtplib.SMTP(smtp_server,port)
-        server.starttls(context=context)
-        server.login(sender_email,password)
-        server.send_message(msg)
-        print("Valmis")
-    except Exception as e:
-        print(e)
-    finally:
-        server.quit()
+
 
 root = tk.Tk()
 root.title("Расчет по методу Пифагора")
@@ -108,7 +128,7 @@ entry_date = tk.Entry(root)
 entry_date.pack(pady=(0, 20))
 
 calculate_button = tk.Button(root, text="Рассчитать", command=calculate_and_show, bg='dark blue', fg='white')
-calculate_button.pack(pady=(0, 20))
+calculate_button.pack(pady=(20, 20))
 
 email_button = tk.Button(root, text="Отправить результат", command=open_email_window, bg='dark blue', fg='white')
 email_button.pack(pady=(0, 20))
